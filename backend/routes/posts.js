@@ -21,7 +21,7 @@ router.get("/", authorize, (request, response) => {
 router.post("/", authorize, (request, response) => {
   const post = request.body;
   const userId = request.currentUser.id;
-  PostModel.create({ userId, ...post }, (rows) => {
+  PostModel.create({ userId, ...post }, () => {
     console.log("Created new post");
     response.json({
       ok: true,
@@ -34,7 +34,7 @@ router.put("/:postId/likes", authorize, (request, response) => {
   const postId = request.params.postId;
   const userId = request.currentUser.id;
 
-  PostModel.like(userId, postId, (row) => {
+  PostModel.like(userId, postId, () => {
     console.log("Post liked");
     response.json({
       liked: true,
@@ -47,7 +47,7 @@ router.delete("/:postId/likes", authorize, (request, response) => {
   const postId = request.params.postId;
   const userId = request.currentUser.id;
 
-  PostModel.unlike(userId, postId, (row) => {
+  PostModel.unlike(userId, postId, () => {
     console.log("Post unliked");
     response.json({
       liked: false,
