@@ -13,6 +13,10 @@
         props: {
             post: Object
         }, methods: {
+            reload() {
+                
+                console.log(this.componentKey);
+            },
             like: function () {
                 axios.put('posts/' + this.post.id + '/likes')
                     .then(() => {
