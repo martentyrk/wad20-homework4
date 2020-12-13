@@ -1,4 +1,4 @@
-import {mount, createLocalVue} from '@vue/test-utils'
+import { mount, createLocalVue } from '@vue/test-utils'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
 import Posts from "../../src/components/Posts.vue";
@@ -36,7 +36,7 @@ const routes = [
     }
 ];
 
-const router = new VueRouter({routes});
+const router = new VueRouter({ routes });
 
 const testData = [
     {
@@ -98,9 +98,50 @@ jest.mock("axios", () => ({
 
 describe('Posts', () => {
 
-    const wrapper = mount(Posts, {router, store, localVue});
+    const wrapper = mount(Posts, { router, store, localVue });
 
-    it('1 == 1', function () {
-        expect(true).toBe(true)
+    it('renders correct amount of posts', function () {
+        const postsCount = wrapper.findAll('.post')
+        expect(postsCount.length).toEqual(testData.length)
+    });
+});
+
+describe('Media', () => {
+
+    const wrapper = mount(Posts, { router, store, localVue });
+
+    it('renders correct amount of images', () => {
+        const imageCount = wrapper.findAll('.post-image > img')
+        const testImage = testData.filter(post => post.media && post.media.type == 'image')
+        expect(imageCount.length).toEqual(testImage.length)
+    })
+
+    it('renders correct amount of videos', () => {
+        const videoCount = wrapper.findAll('.post-image > video')
+        const testVideo = testData.filter(post => post.media && post.media.type == 'video')
+        expect(videoCount.length).toEqual(testVideo.length)
+    })
+    it('nothing is rendered when media is absent', () => {
+        const postsCount = wrapper.findAll('.post')
+        const imageCount = wrapper.findAll('.post-image > img')
+        const videoCount = wrapper.findAll('.post-image > video')
+        const absentMedia = testData.filter(post => !post.media)
+        const testAbsentData = postsCount.length - imageCount.length - videoCount.length
+        expect(testAbsentData).toEqual(absentMedia.length)
+    });
+});
+
+
+
+
+describe('Date', () => {
+    const wrapper = mount(Posts, { router, store, localVue });
+    var moment = require('moment');
+    it('create time is displayed in correct format', () => {
+        for (let i = 0; i < testData.length; i++) {
+            const date = wrapper.find('.post-author > small').text();
+            const formatted = moment(testData[i].createTime).format('LLLL');
+            expect(date).toEqual(formatted);
+        }
     });
 });
