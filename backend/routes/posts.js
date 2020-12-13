@@ -22,6 +22,7 @@ router.post("/", authorize, (request, response) => {
   const post = request.body;
   const userId = request.currentUser.id;
   PostModel.create({ userId, ...post }, () => {
+    //With the err handling, the query took it as a statement and returned instantly.
     console.log("Created new post");
     response.json({
       ok: true,
